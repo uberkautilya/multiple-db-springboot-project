@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -16,36 +16,35 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
+@Configuration
 @EnableJpaRepositories(
-        entityManagerFactoryRef = "entityManagerFactoryOne",
-        transactionManagerRef = "transactionManagerOne",
-        basePackages = "multipledbproject.dbone.repository")
-public class DbOneConfiguration {
+        entityManagerFactoryRef = "entityManagerFactoryTwo",
+        transactionManagerRef = "transactionManagerTwo",
+        basePackages = "multipledbproject.dbtwo.repository")
+public class DbTwoConfiguration {
 
-    @Bean("dataSourceOne")
-    @Primary
-    @ConfigurationProperties(prefix = "db_one")
-    public DataSource dataSourceOne() {
+    @Bean("dataSourceTwo")
+    @ConfigurationProperties(prefix = "db_two")
+    public DataSource dataSourceTwo() {
         return DataSourceBuilder.create().build();
     }
 
-    @Bean(name = "entityManagerFactoryOne")
-    @Primary
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryOne(EntityManagerFactoryBuilder entityManagerFactoryBuilder, @Qualifier("dataSourceOne") DataSource dataSource) {
+    @Bean("entityManagerFactoryTwo")
+    public LocalContainerEntityManagerFactoryBean entityManagerFactoryTwo(EntityManagerFactoryBuilder entityManagerFactoryBuilder, @Qualifier("dataSourceTwo") DataSource dataSource) {
         Map<String, String> properties = new HashMap<>();
-        properties.put("hibernate.hbm2ddl.auto", "update");
+        properties.put("hibernate.hbm2ddl.auto", "true");
         properties.put("hibernate.dialect", "org.hibernate.dialect.MYSQL5Dialect");
         return entityManagerFactoryBuilder
                 .dataSource(dataSource)
-                .packages("multipledbproject.dbone")
-                .persistenceUnit("dbOne")
                 .properties(properties)
-                .build();
+                .persistenceUnit("dbTwo")
+                .packages("multipledbproject.dbtwo").build();
     }
 
-    @Bean(name = "transactionManagerOne")
-    @Primary
-    public PlatformTransactionManager transactionManagerOne(@Qualifier("entityManagerFactoryOne") EntityManagerFactory entityManagerFactory) {
+    @Bean("transactionManagerTwo")
+    public PlatformTransactionManager transactionManagerTwo(@Qualifier("entityManagerFactoryTwo") EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
     }
+
+
 }
