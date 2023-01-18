@@ -34,7 +34,7 @@ public class DbOneConfiguration {
     public LocalContainerEntityManagerFactoryBean entityManagerFactoryOne(EntityManagerFactoryBuilder entityManagerFactoryBuilder, @Qualifier("dataSourceOne") DataSource dataSource) {
         Map<String, String> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", "update");
-        properties.put("hibernate.dialect", "org.hibernate.dialect.MYSQL5Dialect");
+        properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL81Dialect");
         return entityManagerFactoryBuilder
                 .dataSource(dataSource)
                 .packages("multipledbproject.dbone")

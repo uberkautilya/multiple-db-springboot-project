@@ -33,7 +33,7 @@ public class DbTwoConfiguration {
     public LocalContainerEntityManagerFactoryBean entityManagerFactoryTwo(EntityManagerFactoryBuilder entityManagerFactoryBuilder, @Qualifier("dataSourceTwo") DataSource dataSource) {
         Map<String, String> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", "true");
-        properties.put("hibernate.dialect", "org.hibernate.dialect.MYSQL5Dialect");
+        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
         return entityManagerFactoryBuilder
                 .dataSource(dataSource)
                 .properties(properties)
